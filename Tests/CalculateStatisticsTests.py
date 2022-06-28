@@ -1,5 +1,5 @@
 import unittest
-from calculateStatistics import CalculateStatistics
+from CalculateStatistics import CalculateStatistics
 
 
 class CalculateStatisticsTests(unittest.TestCase):
@@ -8,10 +8,10 @@ class CalculateStatisticsTests(unittest.TestCase):
 
     def test_collect_average_queued_durations(self):
         # Arrange
-        ls = ["3.423", "4.732", "2.408"]
+        EXAMPLE_QUEUED_DURATIONS_LIST = ["3.423", "4.732", "2.408"]
 
         # Act
-        for item in ls:
+        for item in EXAMPLE_QUEUED_DURATIONS_LIST:
             self.calculate_statistics.collect_average_durations(item, "queued")
 
         # Assert
@@ -20,10 +20,10 @@ class CalculateStatisticsTests(unittest.TestCase):
 
     def test_collect_average_durations(self):
         # Arrange
-        ls = ["3.243", "2.374", "4.802"]
+        EXAMPLE_DURATIONS_LIST = ["3.243", "2.374", "4.802"]
 
         # Act
-        for item in ls:
+        for item in EXAMPLE_DURATIONS_LIST:
             self.calculate_statistics.collect_average_durations(
                 item, "duration")
 

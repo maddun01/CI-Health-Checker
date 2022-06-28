@@ -1,9 +1,9 @@
-from fileHandling import FileHandling
-from job import Job
+from FileHandling import FileHandling
+from Job import Job
 import os
-from jobHandling import JobHandling
-from statistic import Statistic
-from gitlabAccess import GitlabAccess
+from JobHandling import JobHandling
+from Statistic import Statistic
+from GitlabAccess import GitlabAccess
 
 
 class StartUp:
@@ -20,7 +20,7 @@ class StartUp:
             print("Empty jobs file detected - fetching from GitLab")
             self.gitlab_access.store_jobs()
             self.job.get_jobs()
-            print("New contents in jobs file detected - recalculating statistics")
+            print("Empty contents in jobs file detected - recalculating statistics")
             self.file_handling.wipe_file("stats")
             self.job_handling.call_statistics()
         if self.job.count_jobs == 0:

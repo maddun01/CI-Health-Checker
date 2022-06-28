@@ -1,7 +1,7 @@
-from calculateStatistics import CalculateStatistics
-from fileHandling import FileHandling
-from job import Job
-from statistic import Statistic
+from CalculateStatistics import CalculateStatistics
+from FileHandling import FileHandling
+from Job import Job
+from Statistic import Statistic
 
 
 class JobHandling:
@@ -12,12 +12,14 @@ class JobHandling:
     stat = Statistic()
 
     unique_jobs_list = []
+    jobs_field_names = ["ID", "JOBID", "NAME", "PROJECTID",
+                        "QUEUEDDURATION", "DURATION", "STATUS"]
 
     def unique_jobs(self):
-        if len(self.job.jobs_list) == 0:
+        if self.job.count_jobs == 0:
             self.job.get_jobs()
         for item in self.job.jobs_list:
-            name = item[2]
+            name = item["NAME"]
             if name not in self.unique_jobs_list:
                 self.unique_jobs_list.append(name)
 
@@ -26,18 +28,19 @@ class JobHandling:
             self.unique_jobs()
 
         self.file_handling.write_header_to_file("stats")
+        self.file_handling.open_file("stats", "a")
         id_number = 1
         for unique_job in self.unique_jobs_list:
             for item in self.job.jobs_list:
-                job_name = item[2]
+                job_name = item["NAME"]
                 if job_name == unique_job:
                     self.calculate_statistics.calculate_instances()
                     self.calculate_statistics.collect_average_durations(
-                        item[4], "queued")
+                        item["QUEUEDDURATION"], "queued")
                     self.calculate_statistics.collect_average_durations(
-                        item[5], "duration")
+                        item["DURATION"], "duration")
                     self.calculate_statistics.calculate_status(
-                        item[6].strip("\n"))
+                        item["STATUS"].strip("\n"))
             self.calculate_statistics.calculate_average_durations()
             self.file_handling.stats_file.write(str(id_number) + "," + "\"" + str(unique_job) + "\"" + "," + str(
                 self.calculate_statistics.number_of_instances) + "," + str(self.calculate_statistics.average_queued_duration) + "," + str(
@@ -52,10 +55,24 @@ class JobHandling:
         self.stat.get_stats()
 
     def recalculate_statistics(self):
-        print("Changes to job file detected - recalculating statistics")
+        print("Changes to jobs file detected - recalculating statistics")
         self.file_handling.wipe_file("stats")
         self.unique_jobs_list.clear()
         self.call_statistics()
+
+    def save_to_jobs_file(self):
+        self.file_handling.open_file("jobs", "n")
+        for item in self.job.jobs_list:
+            self.file_handling.jobs_file.write(str(item["ID"]) + "," + str(item["JOBID"]) + "," + "\"" + str(item["NAME"]) + "\"" + "," + str(
+                item["PROJECTID"]) + "," + str(item["QUEUEDDURATION"]) + "," + str(item["DURATION"]) + "," + str(item["STATUS"]) + "\n")
+        self.file_handling.close_file("jobs")
+
+    def append_to_jobs_file(self, new_entry):
+        self.file_handling.open_file("jobs", "a")
+        self.file_handling.jobs_file.write(new_entry + "\n")
+        self.file_handling.close_file("jobs")
+        self.job.clear_jobs_list()
+        self.job.get_jobs()
 
     @property
     def unique_jobs_return(self):

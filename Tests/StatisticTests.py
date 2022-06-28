@@ -1,4 +1,4 @@
-from statistic import Statistic
+from Statistic import Statistic
 import unittest
 
 
@@ -11,22 +11,21 @@ class StatisticTests(unittest.TestCase):
     # The test also makes sure the header is deleted from the list
     def test_get_stats(self):
         # Arrange
-        file = open("stats.csv", "w")
+        file = open("Stats.csv", "w")
         file.write("This line should be deleted\n")
         for i in range(5):
             file.write(f"This is line {i}\n")
         file.close()
-        ls = ["This line should be deleted"]
+        COMPARISON_LIST = ["This line should be deleted"]
 
         # Act
         self.stat.get_stats()
-        file = open("stats.csv", "w")
-        file.truncate(0)
+        file = open("Stats.csv", "w")
         file.close()
 
         # Assert
         self.assertEqual(5, len(self.stat.stats_list))
-        self.assertNotIn(ls, self.stat.stats_list)
+        self.assertNotIn(COMPARISON_LIST, self.stat.stats_list)
 
 # Test the clear_stats method by adding items to stats_list,
 # then calling the method and verifying the list is empty

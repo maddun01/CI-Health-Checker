@@ -1,10 +1,10 @@
-from addEntries import AddEntries
-from dataUI import DataUI
-from deleteEntries import DeleteEntries
-from editEntries import EditEntries
-from inputValidation import InputValidation
-from menuUI import MenuUI
-from startup import StartUp
+from AddEntries import AddEntries
+from DataUI import DataUI
+from DeleteEntries import DeleteEntries
+from EditEntries import EditEntries
+from InputValidation import InputValidation
+from MenuUI import MenuUI
+from Startup import StartUp
 
 
 def main():
@@ -39,19 +39,27 @@ def main():
                 choice = input_validation.validate_int(
                     choice, "Error: Please enter a number (0-5)")
                 if choice == 1:
-                    entry_choice = input_validation.validate_job_ID(
-                        input("Enter job ID: "))
-                    if entry_choice == False:
+                    entry_choice = input("Enter job ID: ")
+                    if entry_choice.upper() == "Q":
                         pass
                     else:
-                        data_UI.display_by_id("jobs", entry_choice)
+                        entry_choice = input_validation.validate_job_ID(
+                            entry_choice)
+                        if entry_choice == False:
+                            pass
+                        else:
+                            data_UI.display_by_id("jobs", entry_choice)
                 elif choice == 2:
-                    entry_choice = input_validation.validate_stat_ID(
-                        input("Enter statistic ID: "))
-                    if entry_choice == False:
+                    entry_choice = input("Enter statistic ID: ")
+                    if entry_choice.upper() == "Q":
                         pass
                     else:
-                        data_UI.display_by_id("stats", entry_choice)
+                        entry_choice = input_validation.validate_stat_ID(
+                            entry_choice)
+                        if entry_choice == False:
+                            pass
+                        else:
+                            data_UI.display_by_id("stats", entry_choice)
 
         elif user_choice == 3:
             print("\nSearch jobs or statistics\n")
@@ -61,7 +69,8 @@ def main():
             if choice.upper() == "Q":
                 pass
             else:
-                choice = input_validation.validate_int(choice, "Error: Please enter a number (0-5)")
+                choice = input_validation.validate_int(
+                    choice, "Error: Please enter a number (0-5)")
                 if choice == 1:
                     search_phrase = input("Enter a search phrase to use: ")
                     if search_phrase.upper() == "Q":
@@ -77,7 +86,7 @@ def main():
 
         elif user_choice == 4:
             print("\nAdd a record\n")
-            add_entries.add_jobs_data()
+            add_entries.add_data()
 
         elif user_choice == 5:
             print("\nEdit a record\n")

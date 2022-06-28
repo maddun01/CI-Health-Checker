@@ -1,10 +1,10 @@
-from dataUI import DataUI
-from deleteEntries import DeleteEntries
-from fileHandling import FileHandling
-from inputValidation import InputValidation
-from job import Job
-from jobHandling import JobHandling
-from menuUI import MenuUI
+from DataUI import DataUI
+from DeleteEntries import DeleteEntries
+from FileHandling import FileHandling
+from InputValidation import InputValidation
+from Job import Job
+from JobHandling import JobHandling
+from MenuUI import MenuUI
 
 
 class EditEntries:
@@ -18,22 +18,10 @@ class EditEntries:
     menu_UI = MenuUI()
 
     def __init__(self):
-        self.format_jobs_entry = "{},{},\"{}\",{},{},{},{}"
-        self.name = " "
-        self.project_id = " "
-        self.queued_duration = " "
-        self.duration = " "
-        self.status = " "
-        self.id_number = " "
-        self.instances = " "
-        self.passes = " "
-        self.fails = " "
-        self.skips = " "
-        self.cancellations = " "
-        self.new_jobs_entry = " "
-        self.to_validate = ""
+        self.to_validate = False
         self.id_to_edit = False
         self.to_return = False
+        self.edited_entry = {}
 
     def choose_data_to_edit(self):
         while self.id_to_edit == False:
@@ -65,87 +53,44 @@ class EditEntries:
                             return
 
     def edit_data(self, id_to_edit):
-        print("Enter the new values, or leave blank to leave unchanged\n")
-        self.item = self.job.jobs_list[id_to_edit-1]
-        while self.id_number == " ":
-            self.id_number = input("Enter the job's new ID: ")
-            if self.id_number.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.id_number = self.is_null(self.id_number, 1)
-                if self.to_validate == True:
-                    self.id_number = self.input_validation.validate_int(
-                        self.id_number, "Error: Please enter a number")
+        fields = [
+            ("Enter the job's new ID: ", "JOBID", lambda user_input: self.input_validation.validate_int(
+                user_input, "Error: Please enter a number")),
+            ("Enter the job's new name: ", "NAME",
+             lambda user_input: self.input_validation.validate_string(user_input)),
+            ("Enter the job's new project ID: ", "PROJECTID", lambda user_input: self.input_validation.validate_int(
+                user_input, "Error: Please enter a number")),
+            ("Enter the job's new queued duration: ", "QUEUEDDURATION",
+             lambda user_input: self.input_validation.validate_float(user_input)),
+            ("Enter the job's new duration: ", "DURATION",
+             lambda user_input: self.input_validation.validate_float(user_input)),
+            ("Enter the job's new status (success, failed, skipped or canceled): ",
+             "STATUS", lambda user_input: self.input_validation.validate_status(user_input))
+        ]
+        while self.to_return != True:
+            print("Enter the new values, or leave blank to leave unchanged\n")
+            self.item = self.job.jobs_list[id_to_edit-1]
+            self.edited_entry = {}
+            self.edited_entry["ID"] = id_to_edit
 
-        while self.name == " ":
-            self.name = input("Enter the job's new name: ")
-            if self.name.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.name = self.is_null(self.name, 2)
+            for user_prompt, field, validation_type in fields:
+                user_input = " "
+                while user_input == " ":
+                    user_input = input(user_prompt)
+                    if user_input.upper() == "Q":
+                        return
+                    else:
+                        user_input = self.is_null(user_input, field)
+                        if self.to_validate == True:
+                            user_input = validation_type(user_input)
+                        self.edited_entry[field] = user_input
+            self.data_UI.display_temp_data(self.edited_entry)
+            self.save_changes()
 
-        while self.project_id == " ":
-            self.project_id = input("Enter the job's new project ID: ")
-            if self.project_id.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.project_id = self.is_null(self.project_id, 3)
-                if self.to_validate == True:
-                    self.project_id = self.input_validation.validate_int(
-                        self.project_id, "Error: Please enter a number")
-
-        while self.queued_duration == " ":
-            self.queued_duration = input(
-                "Enter the job's new queued duration: ")
-            if self.queued_duration.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.queued_duration = self.is_null(self.queued_duration, 4)
-                if self.to_validate == True:
-                    self.queued_duration = self.input_validation.validate_float(
-                        self.queued_duration)
-
-        while self.duration == " ":
-            self.duration = input("Enter the job's new duration: ")
-            if self.duration.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.duration = self.is_null(self.duration, 5)
-                if self.to_validate == True:
-                    self.duration = self.input_validation.validate_float(
-                        self.duration)
-
-        while self.status == " ":
-            self.status = input("Enter the job's new status: ")
-            if self.status.upper() == "Q":
-                self.reset_variables()
-                self.to_return = True
-                return
-            else:
-                self.status = self.is_null(self.status, 6)
-                if self.to_validate == True:
-                    self.status = self.input_validation.validate_status(
-                        self.status)
-
-        self.new_jobs_entry = self.format_jobs_entry.format(
-            self.item[0], self.id_number, self.name, self.project_id, self.queued_duration, self.duration, self.status)
-        self.data_UI.display_temp_data(self.new_jobs_entry)
-        self.save_changes()
-
-    def is_null(self, var_to_check, pos):
+    def is_null(self, var_to_check, key):
         if var_to_check == "":
             self.to_validate = False
-            return(self.item[pos])
+            return(self.item[key])
         else:
             self.to_validate = True
             return(var_to_check)
@@ -153,31 +98,15 @@ class EditEntries:
     def save_changes(self):
         choice = input("Are you sure you want to save? (Y/N/Q) ")
         if choice.upper() == "Y":
-            self.job.jobs_list[self.id_to_edit - 1][1] = self.id_number
-            self.job.jobs_list[self.id_to_edit - 1][2] = self.name
-            self.job.jobs_list[self.id_to_edit - 1][3] = self.project_id
-            self.job.jobs_list[self.id_to_edit - 1][4] = self.queued_duration
-            self.job.jobs_list[self.id_to_edit - 1][5] = self.duration
-            self.job.jobs_list[self.id_to_edit - 1][6] = self.status
+            self.job.jobs_list[self.id_to_edit - 1] = self.edited_entry
             self.delete_entries.update_file()
-            self.to_return = True
         elif choice.upper() == "Q":
-            self.reset_variables()
             self.to_return = True
             return
         self.reset_variables()
 
     def reset_variables(self):
-        self.name = " "
-        self.project_id = " "
-        self.queued_duration = " "
-        self.duration = " "
-        self.status = " "
-        self.id_number = " "
-        self.instances = " "
-        self.passes = " "
-        self.fails = " "
-        self.skips = " "
-        self.cancellations = " "
-        self.new_jobs_entry = " "
+        self.to_validate = False
         self.id_to_edit = False
+        self.to_return = False
+        self.edited_entry = {}

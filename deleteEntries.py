@@ -1,9 +1,9 @@
-from dataUI import DataUI
-from fileHandling import FileHandling
-from inputValidation import InputValidation
-from job import Job
-from jobHandling import JobHandling
-from menuUI import MenuUI
+from DataUI import DataUI
+from FileHandling import FileHandling
+from InputValidation import InputValidation
+from Job import Job
+from JobHandling import JobHandling
+from MenuUI import MenuUI
 
 
 class DeleteEntries:
@@ -23,12 +23,14 @@ class DeleteEntries:
             if id_to_remove.upper() == "Q":
                 return
             else:
-                id_to_remove = self.input_validation.validate_job_ID(id_to_remove)
+                id_to_remove = self.input_validation.validate_job_ID(
+                    id_to_remove)
                 if id_to_remove == False:
                     pass
                 else:
                     self.data_UI.display_by_id("jobs", id_to_remove)
-                    choice = input("Are you sure you want to delete this? (Y/N/Q): ")
+                    choice = input(
+                        "Are you sure you want to delete this? (Y/N/Q): ")
                     if choice.upper() == "Y":
                         self.remove_data(id_to_remove)
                         return
@@ -41,15 +43,12 @@ class DeleteEntries:
         self.job.jobs_list.pop(id_to_remove-1)
         for i in range(id_to_remove-1, self.job.count_jobs):
             line = self.job.jobs_list[i]
-            line[0] = int(line[0]) - 1
+            line["ID"] = int(line["ID"]) - 1
         self.update_file()
 
     def update_file(self):
         self.file_handling.wipe_file("jobs")
         self.file_handling.write_header_to_file("jobs")
-        for item in self.job.jobs_list:
-            self.file_handling.jobs_file.write(str(item[0]) + "," + str(item[1]) + "," + "\"" + str(
-                item[2]) + "\"" + "," + str(item[3]) + "," + str(item[4]) + "," + str(item[5]) + "," + str(item[6]) + "\n")
-        self.file_handling.close_file("jobs")
+        self.job_handling.save_to_jobs_file()
         print("Jobs file updated\n")
         self.job_handling.recalculate_statistics()
