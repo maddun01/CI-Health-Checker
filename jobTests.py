@@ -1,4 +1,4 @@
-from Job import Job
+from job import Job
 import unittest
 
 
@@ -11,21 +11,22 @@ class JobTests(unittest.TestCase):
     # The test also makes sure the header is deleted from the list
     def test_get_jobs(self):
         # Arrange
-        file = open("Jobs.csv", "w")
+        file = open("jobs.csv", "w")
         file.write("This line should be deleted\n")
         for i in range(5):
             file.write(f"This is line {i}\n")
         file.close()
-        COMPARISON_LIST = ["This line should be deleted"]
+        ls = ["This line should be deleted"]
 
         # Act
         self.job.get_jobs()
-        file = open("Jobs.csv", "w")
+        file = open("jobs.csv", "w")
+        file.truncate(0)
         file.close()
 
         # Assert
         self.assertEqual(5, len(self.job.jobs_list))
-        self.assertNotIn(COMPARISON_LIST, self.job.jobs_list)
+        self.assertNotIn(ls, self.job.jobs_list)
 
 # Tests the clear_jobs method by adding items to jobs_list,
 # then calling the method and verifying the list is empty

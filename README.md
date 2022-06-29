@@ -19,9 +19,14 @@ General:
 * Formatting
 
 Refactoring:
-* `dataUI.py` (still quite long after first refactor)
-* `jobHandling.py` (long/complicated)
-* `main.py` (break each statement into methods?)
+* `addEntries.py`
+* `dataUI.py`
+* `deleteEntries.py`
+* `editEntries.py`
+* `gitlabAccess.py` (?)
+* `inputValidation.py`
+* `jobHandling.py`
+* `main.py`
 
 Testing (manual/automated):
 * `addEntries.py`
@@ -30,6 +35,7 @@ Testing (manual/automated):
 * `editEntries.py`
 * `inputValidation.py`
 * `jobHandling.py`
+
 
 ## Assignment Brief
 

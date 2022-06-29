@@ -1,6 +1,6 @@
-from FileHandling import FileHandling
-from Job import Job
-from JobHandling import JobHandling
+from fileHandling import FileHandling
+from job import Job
+from jobHandling import JobHandling
 from key import Key
 import gitlab
 
@@ -29,6 +29,7 @@ class GitlabAccess:
         if len(self.project_id_list) == 0:
             self.fetch_projects()
         self.file_handling.write_header_to_file("jobs")
+        self.file_handling.close_file("jobs")
         added_id = 1
         for i in self.project_id_list:
             project = self.gl.projects.get(int(i))

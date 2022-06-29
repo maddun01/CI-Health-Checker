@@ -1,6 +1,6 @@
-from Job import Job
-from JobHandling import JobHandling
-from Statistic import Statistic
+from job import Job
+from jobHandling import JobHandling
+from statistic import Statistic
 
 
 class InputValidation:

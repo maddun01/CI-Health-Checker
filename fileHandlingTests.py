@@ -1,4 +1,4 @@
-from FileHandling import FileHandling
+from fileHandling import FileHandling
 import unittest
 
 
@@ -40,14 +40,14 @@ class FileHandlingTests(unittest.TestCase):
 
     def test_wipe_jobs_file(self):
         # Arrange
-        file = open("Jobs.csv", "w")
+        file = open("jobs.csv", "w")
         file.write("Add this to the file")
         file.close()
         contents = []
 
         # Act
         self.file_handling.wipe_file("jobs")
-        file = open("Jobs.csv", "r")
+        file = open("jobs.csv", "r")
         for item in file:
             contents.append(item)
         file.close()
@@ -57,14 +57,14 @@ class FileHandlingTests(unittest.TestCase):
 
     def test_wipe_stats_file(self):
         # Arrange
-        file = open("Stats.csv", "w")
+        file = open("stats.csv", "w")
         file.write("Add this to the file")
         file.close()
         contents = []
 
         # Act
         self.file_handling.wipe_file("stats")
-        file = open("Stats.csv", "r")
+        file = open("stats.csv", "r")
         for item in file:
             contents.append(item)
         file.close()
@@ -73,37 +73,42 @@ class FileHandlingTests(unittest.TestCase):
         self.assertEqual(0, len(contents))
 
     def test_write_jobs_header(self):
-        # Arrange
-        file = open("Jobs.csv", "w")
+        #Arrange
+        file = open("jobs.csv", "w")
+        file.truncate(0)
         file.close()
-        COMPARISON_STRING = "ID,JOBID,NAME,PROJECTID,QUEUEDDURATION,DURATION,STATUS\n"
 
-        # Act
+        #Act
         self.file_handling.write_header_to_file("jobs")
-
-        file = open("Jobs.csv", "r")
+        self.file_handling.jobs_file.close()
+        
+        file = open("jobs.csv", "r")
         line = file.readline()
         file.close()
 
-        # Assert
-        self.assertEqual(COMPARISON_STRING, line)
-        file = open("Jobs.csv", "w")
+        #Assert
+        self.assertEqual("ID,JOBID,NAME,PROJECTID,QUEUEDDURATION,DURATION,STATUS\n", line)
+        file = open("jobs.csv", "w")
+        file.truncate(0)
         file.close()
 
     def test_write_stats_header(self):
-        # Arrange
-        file = open("Stats.csv", "w")
+        #Arrange
+        file = open("stats.csv", "w")
+        file.truncate(0)
         file.close()
-        COMPARISON_STRING = "ID,NAME,INSTANCES,AVERAGEQUEUEDDURATION,AVERAGEDURATION,PASSES,FAILS,SKIPS,CANCELLATIONS\n"
 
-        # Act
+        #Act
         self.file_handling.write_header_to_file("stats")
-
-        file = open("Stats.csv", "r")
+        self.file_handling.stats_file.close()
+        
+        file = open("stats.csv", "r")
         line = file.readline()
         file.close()
 
-        # Assert
-        self.assertEqual(COMPARISON_STRING, line)
-        file = open("Stats.csv", "w")
+        #Assert
+        self.assertEqual("ID,NAME,INSTANCES,AVERAGEQUEUEDDURATION,AVERAGEDURATION,PASSES,FAILS,SKIPS,CANCELLATIONS\n", line)
+        file = open("stats.csv", "w")
+        file.truncate(0)
         file.close()
+

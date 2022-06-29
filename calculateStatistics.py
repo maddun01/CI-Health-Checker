@@ -12,14 +12,17 @@ class CalculateStatistics:
     def calculate_instances(self):
         self.number_of_instances += 1
 
-    def collect_average_durations(self, average_duration, duration_type):
+    def collect_average_durations(self, av_duration, duration_type):
         if duration_type == "queued":
-            if average_duration != "None":
-                self.average_queued_duration_list.append(
-                    float(average_duration))
+            if av_duration == "None":
+                pass
+            else:
+                self.average_queued_duration_list.append(float(av_duration))
         elif duration_type == "duration":
-            if average_duration != "None":
-                self.average_duration_list.append(float(average_duration))
+            if av_duration == "None":
+                pass
+            else:
+                self.average_duration_list.append(float(av_duration))
 
     def calculate_average_durations(self):
         self.average_queued_duration = 0

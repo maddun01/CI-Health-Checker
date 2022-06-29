@@ -1,9 +1,9 @@
-from DataUI import DataUI
-from FileHandling import FileHandling
-from InputValidation import InputValidation
-from Job import Job
-from JobHandling import JobHandling
-from MenuUI import MenuUI
+from dataUI import DataUI
+from fileHandling import FileHandling
+from inputValidation import InputValidation
+from job import Job
+from jobHandling import JobHandling
+from menuUI import MenuUI
 
 
 class AddEntries:
@@ -16,52 +16,114 @@ class AddEntries:
     menu_UI = MenuUI()
 
     def __init__(self):
-        self.new_jobs_entry = {}
+        self.format_jobs_entry = "{},{},\"{}\",{},{},{},{}"
+        self.name = " "
+        self.project_id = " "
+        self.queued_duration = " "
+        self.duration = " "
+        self.status = " "
+        self.id_number = " "
+        self.instances = " "
+        self.passes = " "
+        self.fails = " "
+        self.skips = " "
+        self.cancellations = " "
+        self.new_jobs_entry = ""
+        self.added_id = ""
         self.to_return = False
 
-    def add_data(self):
-        fields = [
-            ("Enter the job's ID: ", "JOBID", lambda user_input: self.input_validation.validate_int(
-                user_input, "Error: Please enter a number")),
-            ("Enter the job's name: ", "NAME",
-             lambda user_input: self.input_validation.validate_string(user_input)),
-            ("Enter the job's project ID: ", "PROJECTID", lambda user_input: self.input_validation.validate_int(
-                user_input, "Error: Please enter a number")),
-            ("Enter the job's queued duration: ", "QUEUEDDURATION",
-             lambda user_input: self.input_validation.validate_float(user_input)),
-            ("Enter the job's duration: ", "DURATION",
-             lambda user_input: self.input_validation.validate_float(user_input)),
-            ("Enter the job's status (success, failed, skipped or canceled): ", "STATUS",
-             lambda user_input: self.input_validation.validate_status(user_input))
-        ]
-        while self.to_return != True:
-            self.new_jobs_entry = {}
-            self.new_jobs_entry["ID"] = self.job.count_jobs + 1
+    def add_jobs_data(self):
+        while self.to_return == False:
             print(self.menu_UI.return_to_menu_header)
-            for user_prompt, field, validation_type in fields:
-                user_input = " "
-                while user_input == " ":
-                    user_input = input(user_prompt)
-                    if user_input.upper() == "Q":
-                        return
-                    else:
-                        user_input = validation_type(user_input)
-                        self.new_jobs_entry[field] = user_input
+            self.added_id = (self.job.count_jobs) + 1
+            while self.id_number == " ":
+                self.id_number = input("Enter the job's ID: ")
+                if self.id_number.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.id_number = self.input_validation.validate_int(
+                        self.id_number, "Error: Please enter a number")
+
+            while self.name == " ":
+                self.name = input("Enter the job's name: ")
+                if self.name.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.name = self.input_validation.validate_string(
+                        self.name)
+
+            while self.project_id == " ":
+                self.project_id = input("Enter the job's project ID: ")
+                if self.project_id.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.project_id = self.input_validation.validate_int(
+                        self.project_id, "Error: Please enter a number")
+
+            while self.queued_duration == " ":
+                self.queued_duration = input(
+                    "Enter the job's queued duration: ")
+                if self.queued_duration.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.queued_duration = self.input_validation.validate_float(
+                        self.queued_duration)
+
+            while self.duration == " ":
+                self.duration = input("Enter the job's duration: ")
+                if self.duration.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.duration = self.input_validation.validate_float(
+                        self.duration)
+
+            while self.status == " ":
+                self.status = input(
+                    "Enter the job's status (success, failed, skipped or canceled): ")
+                if self.status.upper() == "Q":
+                    self.reset_variables()
+                    return
+                else:
+                    self.status = self.input_validation.validate_status(
+                        self.status)
+
+            self.new_jobs_entry = self.format_jobs_entry.format(
+                self.added_id, self.id_number, self.name, self.project_id, self.queued_duration, self.duration, self.status)
             self.data_UI.display_temp_data(self.new_jobs_entry)
             self.save_jobs_data()
+        self.to_return = False
 
     def save_jobs_data(self):
         choice = input("Are you sure you want to save? (Y/N/Q) ")
         if choice.upper() == "Y":
-            self.job.jobs_list.append(self.new_jobs_entry)
-            self.job_handling.save_to_jobs_file()
+            self.file_handling.open_file("jobs", "a")
+            self.file_handling.jobs_file.write(self.new_jobs_entry + "\n")
+            self.file_handling.close_file("jobs")
+            self.job.clear_jobs_list()
+            self.job.get_jobs()
             print("\nNew entry saved")
             self.job_handling.recalculate_statistics()
         elif choice.upper() == "Q":
             self.to_return = True
-            return
+            pass
         self.reset_variables()
 
     def reset_variables(self):
-        self.new_jobs_entry = {}
-        self.to_return = False
+        self.name = " "
+        self.project_id = " "
+        self.queued_duration = " "
+        self.duration = " "
+        self.status = " "
+        self.id_number = " "
+        self.instances = " "
+        self.passes = " "
+        self.fails = " "
+        self.skips = " "
+        self.cancellations = " "
+        self.new_jobs_entry = " "
+        self.added_id = " "
